@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Edit Category</h1>
+        {{ form_start(categoryForm) }}
+        <div class="mb-3">
+            {{ form_row(categoryForm.name) }}
+        </div>
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a href="{{ path('app_admin') }}" class="btn btn-secondary ms-2">Cancel</a>
+        {{ form_end(categoryForm) }}
+    </div>
+{% endblock %}

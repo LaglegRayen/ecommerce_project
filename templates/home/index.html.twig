@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to Our Store{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-4">Our Products</h1>
+            </div>
+            <div class="col-auto">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sort me-2"></i>Sort by
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                        <li><a class="dropdown-item" href="{{ path('app_home', {'sort': 'name'}) }}">Name</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_home', {'sort': 'price_asc'}) }}">Price: Low to High</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_home', {'sort': 'price_desc'}) }}">Price: High to Low</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            {% for product in products %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{{ asset('uploads/products/' ~ product.image) }}"
+                                 class="card-img-top"
+                                 alt="{{ product.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted">{{ product.category.name }}</p>
+                            <p class="card-text">
+                                <strong class="text-primary">${{ product.price|number_format(2) }}</strong>
+                            </p>
+                            {% if product.stock > 0 %}
+                                <span class="badge bg-success mb-2">In Stock</span>
+                            {% else %}
+                                <span class="badge bg-danger mb-2">Out of Stock</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        <i class="fas fa-box-open fa-3x mb-3"></i>
+                        <p class="mb-0">No products found.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="navigation d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(products) }}
+        </div>
+    </div>
+{% endblock %}

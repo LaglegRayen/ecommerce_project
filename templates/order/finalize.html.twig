@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Order Confirmation{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                        <h1 class="h3 mb-3">Thank You for Your Order!</h1>
+                        <p class="text-muted mb-4">Order #{{ order.reference }}</p>
+
+                        <div class="alert alert-info">
+                            <p class="mb-0">We've sent a confirmation email to <strong>{{ order.email }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Order Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6>Shipping Address</h6>
+                                <address>
+                                    {{ order.shippingAddress.fullName }}<br>
+                                    {{ order.shippingAddress.street }}<br>
+                                    {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zipCode }}<br>
+                                    {{ order.shippingAddress.country }}
+                                </address>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Payment Information</h6>
+                                <p class="mb-1">Payment Method: {{ order.paymentMethod }}</p>
+                                <p class="mb-0">Status:
+                                    <span class="badge bg-success">Paid</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-end">Price</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in order.items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ asset('uploads/products/' ~ item.product.image) }}"
+                                                     alt="{{ item.product.name }}"
+                                                     class="img-thumbnail me-3"
+                                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% endif %}
+                                            {{ item.product.name }}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">${{ item.price|number_format(2) }}</td>
+                                    <td class="text-end">${{ (item.price * item.quantity)|number_format(2) }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end">Subtotal</td>
+                                <td class="text-end">${{ order.subtotal|number_format(2) }}</td>
+                            </tr>
+                            {% if order.discount %}
+                                <tr>
+                                    <td colspan="3" class="text-end text-success">Discount</td>
+                                    <td class="text-end text-success">-${{ order.discount|number_format(2) }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="3" class="text-end">Shipping</td>
+                                <td class="text-end">${{ order.shipping|number_format(2) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total</strong></td>
+                                <td class="text-end"><strong>${{ order.total|number_format(2) }}</strong></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_home') }}" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
